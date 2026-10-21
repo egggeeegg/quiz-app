@@ -6,6 +6,12 @@
 ![Node](https://img.shields.io/badge/Node-%3E%3D20-339933)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
+## 界面预览
+
+| 登录 | 注册 |
+|---|---|
+| ![登录页](docs/screenshots/login.png) | ![注册页](docs/screenshots/register.png) |
+
 ## 功能
 
 - **随机组卷**：按题型分段抽取（60 单选 / 10 多选 / 20 判断，满分 100），也可按错题重练或智能组卷（一半错题 + 一半新题）。
