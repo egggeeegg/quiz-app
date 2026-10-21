@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "quiz-app-backend",
   "version": "1.0.0",
   "private": true,
@@ -14,7 +14,7 @@
     "node": ">=20"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "bcryptjs": "^3.0.3",
     "sql.js": "^1.11.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
