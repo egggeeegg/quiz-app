@@ -1,0 +1,56 @@
+﻿# Dependencies
+node_modules/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+backend/data/
+
+# Environment
+.env
+.env.local
+
+# Private question bank and source documents (not redistributable)
+questions.json
+*.docx
+*.bak
+更新文件/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build
+dist/
+build/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# Local agent data
+.workbuddy/
+
+# Legacy files kept for the private deployment, excluded from the public repo
+backend/src/auth.js
+backend/src/middleware/authOptional.js
+backend/src/middleware/errorHandler.js
+backend/src/utils/response.js
+backend/src/fix_old_mistakes.mjs
+backend/_verify_final.mjs
+frontend/src/composables/useExam.js
+frontend/src/utils/format.js

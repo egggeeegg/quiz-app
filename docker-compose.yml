@@ -1,0 +1,36 @@
+﻿services:
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      # 缺失或为空时直接拒绝启动，避免回落到硬编码默认密钥
+      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET 未设置，请先执行 cp .env.example .env 并填写随机密钥}
+      - DATABASE_PATH=/app/data/quiz.db
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:8080}
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-}
+    volumes:
+      - quiz-data:/app/data
+      - ./questions.json:/app/questions.json
+    restart: unless-stopped
+    networks:
+      - quiz-net
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - quiz-net
+
+volumes:
+  quiz-data:
+
+networks:
+  quiz-net:
+    driver: bridge

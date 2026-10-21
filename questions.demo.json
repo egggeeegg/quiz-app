@@ -1,0 +1,1072 @@
+[
+  {
+    "id": 1,
+    "type": "单选",
+    "question": "typeof null 的结果是？",
+    "options": {
+      "A": "\"null\"",
+      "B": "\"object\"",
+      "C": "\"undefined\"",
+      "D": "\"number\""
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 2,
+    "type": "单选",
+    "question": "关于 const 声明，下列说法正确的是？",
+    "options": {
+      "A": "变量的值完全不可变",
+      "B": "不能重新赋值，但对象属性可以修改",
+      "C": "只能用来声明数字",
+      "D": "与 var 完全等价"
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 3,
+    "type": "单选",
+    "question": "[1, 2, 3].map(x => x * 2) 的结果是？",
+    "options": {
+      "A": "[1, 2, 3]",
+      "B": "[2, 3, 6]",
+      "C": "[2, 4, 6]",
+      "D": "原数组被修改为 [2, 4, 6]"
+    },
+    "answer": "C",
+    "analysis": ""
+  },
+  {
+    "id": 4,
+    "type": "单选",
+    "question": "下列哪一项不是 Promise 的状态？",
+    "options": {
+      "A": "pending",
+      "B": "fulfilled",
+      "C": "rejected",
+      "D": "running"
+    },
+    "answer": "D",
+    "analysis": ""
+  },
+  {
+    "id": 5,
+    "type": "单选",
+    "question": "=== 与 == 的主要区别是？",
+    "options": {
+      "A": "=== 比较前不做类型转换",
+      "B": "=== 只比较值不比较类型",
+      "C": "=== 会把两边转成字符串",
+      "D": "=== 总是返回 true"
+    },
+    "answer": "A",
+    "analysis": ""
+  },
+  {
+    "id": 6,
+    "type": "单选",
+    "question": "闭包指的是？",
+    "options": {
+      "A": "函数内部定义的变量",
+      "B": "函数与其词法环境的组合",
+      "C": "一种循环语法",
+      "D": "浏览器提供的 API"
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 7,
+    "type": "单选",
+    "question": "Array.prototype.filter 的返回值是？",
+    "options": {
+      "A": "原数组",
+      "B": "布尔值",
+      "C": "满足条件元素组成的新数组",
+      "D": "元素个数"
+    },
+    "answer": "C",
+    "analysis": ""
+  },
+  {
+    "id": 8,
+    "type": "单选",
+    "question": "下列属于微任务的是？",
+    "options": {
+      "A": "Promise.then 的回调",
+      "B": "setTimeout 回调",
+      "C": "requestAnimationFrame",
+      "D": "setInterval 回调"
+    },
+    "answer": "A",
+    "analysis": ""
+  },
+  {
+    "id": 9,
+    "type": "单选",
+    "question": "JSON.parse('{\"a\":1}') 的结果是？",
+    "options": {
+      "A": "字符串",
+      "B": "对象 { a: 1 }",
+      "C": "数字 1",
+      "D": "抛出异常"
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 10,
+    "type": "单选",
+    "question": "let 声明的变量作用域是？",
+    "options": {
+      "A": "函数作用域",
+      "B": "全局作用域",
+      "C": "块级作用域",
+      "D": "模块作用域且不可访问"
+    },
+    "answer": "C",
+    "analysis": ""
+  },
+  {
+    "id": 11,
+    "type": "单选",
+    "question": "Vue 3 中创建对象类型响应式数据应使用？",
+    "options": {
+      "A": "reactive()",
+      "B": "ref() 只能用于对象",
+      "C": "computed()",
+      "D": "watch()"
+    },
+    "answer": "A",
+    "analysis": ""
+  },
+  {
+    "id": 12,
+    "type": "单选",
+    "question": "在 <script setup> 中访问 ref 定义的值需要？",
+    "options": {
+      "A": "直接使用变量名",
+      "B": "通过 .value",
+      "C": "通过 $refs",
+      "D": "通过 get()"
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 13,
+    "type": "单选",
+    "question": "v-model 的本质是？",
+    "options": {
+      "A": "只绑定初始值",
+      "B": "把数据写入 localStorage",
+      "C": "绑定值并监听输入事件",
+      "D": "自动提交表单"
+    },
+    "answer": "C",
+    "analysis": ""
+  },
+  {
+    "id": 14,
+    "type": "单选",
+    "question": "computed 的特点是？",
+    "options": {
+      "A": "依赖变化时才重新计算并缓存结果",
+      "B": "每次渲染都重新计算",
+      "C": "只能返回字符串",
+      "D": "不能依赖其他响应式数据"
+    },
+    "answer": "A",
+    "analysis": ""
+  },
+  {
+    "id": 15,
+    "type": "单选",
+    "question": "onMounted 回调在什么时候执行？",
+    "options": {
+      "A": "组件创建前",
+      "B": "组件挂载到 DOM 后",
+      "C": "组件卸载时",
+      "D": "每次数据变化时"
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 16,
+    "type": "单选",
+    "question": "v-for 中建议为每一项提供 key，主要目的是？",
+    "options": {
+      "A": "让模板语法合法",
+      "B": "提升 CSS 优先级",
+      "C": "帮助虚拟 DOM 正确复用节点",
+      "D": "自动排序"
+    },
+    "answer": "C",
+    "analysis": ""
+  },
+  {
+    "id": 17,
+    "type": "单选",
+    "question": "Vue Router 使用 history 模式时，服务端需要？",
+    "options": {
+      "A": "把未知路径回退到 index.html",
+      "B": "关闭所有静态资源",
+      "C": "只允许 GET /",
+      "D": "强制使用 hash"
+    },
+    "answer": "A",
+    "analysis": ""
+  },
+  {
+    "id": 18,
+    "type": "单选",
+    "question": "defineProps 的作用是？",
+    "options": {
+      "A": "定义组件事件",
+      "B": "声明组件接收的 props",
+      "C": "注册全局组件",
+      "D": "创建路由"
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 19,
+    "type": "单选",
+    "question": "Vue 子组件向父组件通信通常使用？",
+    "options": {
+      "A": "props",
+      "B": "provide/inject",
+      "C": "emit 触发事件",
+      "D": "localStorage"
+    },
+    "answer": "C",
+    "analysis": ""
+  },
+  {
+    "id": 20,
+    "type": "单选",
+    "question": "watch 的主要用途是？",
+    "options": {
+      "A": "声明模板变量",
+      "B": "替代 computed 做缓存",
+      "C": "修改组件样式",
+      "D": "监听数据变化并执行副作用"
+    },
+    "answer": "D",
+    "analysis": ""
+  },
+  {
+    "id": 21,
+    "type": "单选",
+    "question": "按照 REST 约定，创建资源通常使用哪个方法？",
+    "options": {
+      "A": "GET",
+      "B": "POST",
+      "C": "PUT",
+      "D": "HEAD"
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 22,
+    "type": "单选",
+    "question": "HTTP 状态码 204 表示？",
+    "options": {
+      "A": "请求被重定向",
+      "B": "资源不存在",
+      "C": "成功但没有响应体",
+      "D": "服务器内部错误"
+    },
+    "answer": "C",
+    "analysis": ""
+  },
+  {
+    "id": 23,
+    "type": "单选",
+    "question": "HTTP 401 表示？",
+    "options": {
+      "A": "未认证或凭证无效",
+      "B": "已认证但无权限",
+      "C": "请求方法不允许",
+      "D": "网关超时"
+    },
+    "answer": "A",
+    "analysis": ""
+  },
+  {
+    "id": 24,
+    "type": "单选",
+    "question": "下列哪个 HTTP 方法应当具备幂等性？",
+    "options": {
+      "A": "POST",
+      "B": "PATCH",
+      "C": "CONNECT",
+      "D": "PUT"
+    },
+    "answer": "D",
+    "analysis": ""
+  },
+  {
+    "id": 25,
+    "type": "单选",
+    "question": "CORS 预检请求使用的 HTTP 方法是？",
+    "options": {
+      "A": "GET",
+      "B": "OPTIONS",
+      "C": "HEAD",
+      "D": "TRACE"
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 26,
+    "type": "单选",
+    "question": "发送 JSON 请求体时，Content-Type 通常设置为？",
+    "options": {
+      "A": "text/plain",
+      "B": "application/x-www-form-urlencoded",
+      "C": "application/json",
+      "D": "multipart/form-data"
+    },
+    "answer": "C",
+    "analysis": ""
+  },
+  {
+    "id": 27,
+    "type": "单选",
+    "question": "HTTP 404 表示？",
+    "options": {
+      "A": "请求体过大",
+      "B": "资源不存在",
+      "C": "认证失败",
+      "D": "服务不可用"
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 28,
+    "type": "单选",
+    "question": "HTTP 500 表示？",
+    "options": {
+      "A": "客户端参数错误",
+      "B": "资源被永久移动",
+      "C": "请求过于频繁",
+      "D": "服务端内部错误"
+    },
+    "answer": "D",
+    "analysis": ""
+  },
+  {
+    "id": 29,
+    "type": "单选",
+    "question": "Bearer Token 通常放在哪个请求头中？",
+    "options": {
+      "A": "Authorization",
+      "B": "Content-Type",
+      "C": "X-Device-Id",
+      "D": "Accept-Language"
+    },
+    "answer": "A",
+    "analysis": ""
+  },
+  {
+    "id": 30,
+    "type": "单选",
+    "question": "PATCH 方法的语义是？",
+    "options": {
+      "A": "整体替换资源",
+      "B": "对资源做部分更新",
+      "C": "删除资源",
+      "D": "查询资源"
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 31,
+    "type": "单选",
+    "question": "Express 中间件中调用 next() 的作用是？",
+    "options": {
+      "A": "结束响应",
+      "B": "抛出异常",
+      "C": "交给下一个中间件处理",
+      "D": "重启服务"
+    },
+    "answer": "C",
+    "analysis": ""
+  },
+  {
+    "id": 32,
+    "type": "单选",
+    "question": "解析 JSON 请求体需要使用哪个内置中间件？",
+    "options": {
+      "A": "express.json()",
+      "B": "express.static()",
+      "C": "cors()",
+      "D": "cookieParser()"
+    },
+    "answer": "A",
+    "analysis": ""
+  },
+  {
+    "id": 33,
+    "type": "单选",
+    "question": "package.json 的主要作用是？",
+    "options": {
+      "A": "存放数据库文件",
+      "B": "记录依赖、脚本和项目元信息",
+      "C": "编译 Java 代码",
+      "D": "配置 Nginx"
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 34,
+    "type": "单选",
+    "question": "ES Module 中导入默认导出的语法是？",
+    "options": {
+      "A": "import x from \"./x.js\"",
+      "B": "require(\"./x.js\")",
+      "C": "include \"./x.js\"",
+      "D": "using x = require(\"./x.js\")"
+    },
+    "answer": "A",
+    "analysis": ""
+  },
+  {
+    "id": 35,
+    "type": "单选",
+    "question": "process.env 用于访问？",
+    "options": {
+      "A": "命令行参数",
+      "B": "当前工作目录",
+      "C": "CPU 信息",
+      "D": "环境变量"
+    },
+    "answer": "D",
+    "analysis": ""
+  },
+  {
+    "id": 36,
+    "type": "单选",
+    "question": "Node.js 中异步读取文件的推荐写法是？",
+    "options": {
+      "A": "fs.readFileSync",
+      "B": "fs.openSync",
+      "C": "fs.promises.readFile",
+      "D": "fs.existsSync"
+    },
+    "answer": "C",
+    "analysis": ""
+  },
+  {
+    "id": 37,
+    "type": "单选",
+    "question": "Node.js 被称为单线程，指的是？",
+    "options": {
+      "A": "不能使用多核 CPU",
+      "B": "JavaScript 主执行线程是单线程，IO 由 libuv 线程池处理",
+      "C": "只能运行一个进程",
+      "D": "不能处理并发请求"
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 38,
+    "type": "单选",
+    "question": "npm ci 的主要特点是？",
+    "options": {
+      "A": "严格按照 package-lock.json 安装依赖",
+      "B": "升级所有依赖到最新版",
+      "C": "只安装开发依赖",
+      "D": "不需要 package.json"
+    },
+    "answer": "A",
+    "analysis": ""
+  },
+  {
+    "id": 39,
+    "type": "单选",
+    "question": "Express 中获取路径参数（如 /users/:id）应使用？",
+    "options": {
+      "A": "req.query",
+      "B": "req.params",
+      "C": "req.body",
+      "D": "req.headers"
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 40,
+    "type": "单选",
+    "question": "Express 错误处理中间件的参数个数是？",
+    "options": {
+      "A": "1 个",
+      "B": "2 个",
+      "C": "3 个",
+      "D": "4 个"
+    },
+    "answer": "D",
+    "analysis": ""
+  },
+  {
+    "id": 41,
+    "type": "单选",
+    "question": "SQL 中用于去重的关键字是？",
+    "options": {
+      "A": "DISTINCT",
+      "B": "UNIQUE",
+      "C": "GROUP",
+      "D": "FILTER"
+    },
+    "answer": "A",
+    "analysis": ""
+  },
+  {
+    "id": 42,
+    "type": "单选",
+    "question": "SQL 中过滤行应使用哪个子句？",
+    "options": {
+      "A": "WHERE",
+      "B": "ORDER BY",
+      "C": "LIMIT",
+      "D": "HAVING"
+    },
+    "answer": "A",
+    "analysis": ""
+  },
+  {
+    "id": 43,
+    "type": "单选",
+    "question": "SQL 中按字段分组聚合应使用？",
+    "options": {
+      "A": "ORDER BY",
+      "B": "WHERE",
+      "C": "GROUP BY",
+      "D": "UNION"
+    },
+    "answer": "C",
+    "analysis": ""
+  },
+  {
+    "id": 44,
+    "type": "单选",
+    "question": "把两张表按关联条件组合起来应使用？",
+    "options": {
+      "A": "UNION",
+      "B": "SUBQUERY",
+      "C": "TRUNCATE",
+      "D": "JOIN"
+    },
+    "answer": "D",
+    "analysis": ""
+  },
+  {
+    "id": 45,
+    "type": "单选",
+    "question": "数据库主键的特点是？",
+    "options": {
+      "A": "唯一且非空",
+      "B": "允许重复",
+      "C": "必须为字符串",
+      "D": "自动建立外键"
+    },
+    "answer": "A",
+    "analysis": ""
+  },
+  {
+    "id": 46,
+    "type": "单选",
+    "question": "提交事务使用哪个语句？",
+    "options": {
+      "A": "SAVEPOINT",
+      "B": "COMMIT",
+      "C": "ROLLBACK",
+      "D": "CHECKPOINT"
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 47,
+    "type": "单选",
+    "question": "回滚事务使用哪个语句？",
+    "options": {
+      "A": "COMMIT",
+      "B": "BEGIN",
+      "C": "ROLLBACK",
+      "D": "VACUUM"
+    },
+    "answer": "C",
+    "analysis": ""
+  },
+  {
+    "id": 48,
+    "type": "单选",
+    "question": "统计表中行数应使用？",
+    "options": {
+      "A": "COUNT(*)",
+      "B": "SUM(*)",
+      "C": "TOTAL(*)",
+      "D": "ROWS(*)"
+    },
+    "answer": "A",
+    "analysis": ""
+  },
+  {
+    "id": 49,
+    "type": "单选",
+    "question": "数据库索引的主要作用是？",
+    "options": {
+      "A": "减少磁盘占用",
+      "B": "加速查询检索",
+      "C": "自动备份数据",
+      "D": "加密字段"
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 50,
+    "type": "单选",
+    "question": "外键约束的主要作用是？",
+    "options": {
+      "A": "提升写入速度",
+      "B": "自动生成主键",
+      "C": "压缩数据",
+      "D": "维护表之间的引用完整性"
+    },
+    "answer": "D",
+    "analysis": ""
+  },
+  {
+    "id": 51,
+    "type": "单选",
+    "question": "查看工作区状态应使用哪个 Git 命令？",
+    "options": {
+      "A": "git status",
+      "B": "git log",
+      "C": "git diff --cached",
+      "D": "git remote"
+    },
+    "answer": "A",
+    "analysis": ""
+  },
+  {
+    "id": 52,
+    "type": "单选",
+    "question": "创建并切换到新分支应使用？",
+    "options": {
+      "A": "git branch -d",
+      "B": "git checkout --",
+      "C": "git switch -c",
+      "D": "git clone"
+    },
+    "answer": "C",
+    "analysis": ""
+  },
+  {
+    "id": 53,
+    "type": "单选",
+    "question": "把另一个分支的改动合并到当前分支应使用？",
+    "options": {
+      "A": "git rebase --abort",
+      "B": "git merge",
+      "C": "git reset --hard",
+      "D": "git stash"
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 54,
+    "type": "单选",
+    "question": "撤销一个已经推送到远端的提交，较安全的方式是？",
+    "options": {
+      "A": "git reset --hard 后强推",
+      "B": "删除本地仓库",
+      "C": "git commit --amend",
+      "D": "git revert"
+    },
+    "answer": "D",
+    "analysis": ""
+  },
+  {
+    "id": 55,
+    "type": "单选",
+    "question": "查看提交历史应使用？",
+    "options": {
+      "A": "git log",
+      "B": "git status",
+      "C": "git fsck",
+      "D": "git blame --reverse"
+    },
+    "answer": "A",
+    "analysis": ""
+  },
+  {
+    "id": 56,
+    "type": "单选",
+    "question": ".gitignore 文件的作用是？",
+    "options": {
+      "A": "删除已跟踪文件",
+      "B": "让 Git 忽略未跟踪的文件",
+      "C": "加密仓库",
+      "D": "设置远程地址"
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 57,
+    "type": "单选",
+    "question": "Docker 容器与镜像的关系是？",
+    "options": {
+      "A": "容器是镜像的构建缓存",
+      "B": "镜像运行在容器内部",
+      "C": "容器是镜像的运行实例",
+      "D": "两者完全相同"
+    },
+    "answer": "C",
+    "analysis": ""
+  },
+  {
+    "id": 58,
+    "type": "单选",
+    "question": "根据 Dockerfile 构建镜像应使用？",
+    "options": {
+      "A": "docker run",
+      "B": "docker build",
+      "C": "docker pull",
+      "D": "docker save"
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 59,
+    "type": "单选",
+    "question": "docker run -p 8080:80 的含义是？",
+    "options": {
+      "A": "容器 8080 映射到宿主 80",
+      "B": "宿主 8080 映射到容器 80",
+      "C": "开放 8080 个端口",
+      "D": "限制 80 个连接"
+    },
+    "answer": "B",
+    "analysis": ""
+  },
+  {
+    "id": 60,
+    "type": "单选",
+    "question": "Docker 数据卷的主要用途是？",
+    "options": {
+      "A": "加速镜像构建",
+      "B": "隔离网络",
+      "C": "限制 CPU",
+      "D": "持久化和共享数据"
+    },
+    "answer": "D",
+    "analysis": ""
+  },
+  {
+    "id": 61,
+    "type": "多选",
+    "question": "下列哪些 HTTP 方法应当是幂等的？",
+    "options": {
+      "A": "GET",
+      "B": "POST",
+      "C": "PUT",
+      "D": "DELETE"
+    },
+    "answer": "ACD",
+    "analysis": ""
+  },
+  {
+    "id": 62,
+    "type": "多选",
+    "question": "Vue 3 中属于响应式相关 API 的有？",
+    "options": {
+      "A": "ref",
+      "B": "reactive",
+      "C": "localStorage",
+      "D": "computed"
+    },
+    "answer": "ABD",
+    "analysis": ""
+  },
+  {
+    "id": 63,
+    "type": "多选",
+    "question": "下列属于 SQL 聚合函数的有？",
+    "options": {
+      "A": "COUNT",
+      "B": "SUM",
+      "C": "WHERE",
+      "D": "AVG"
+    },
+    "answer": "ABD",
+    "analysis": ""
+  },
+  {
+    "id": 64,
+    "type": "多选",
+    "question": "下列属于 Git 常用操作的有？",
+    "options": {
+      "A": "git commit",
+      "B": "git branch",
+      "C": "docker build",
+      "D": "git merge"
+    },
+    "answer": "ABD",
+    "analysis": ""
+  },
+  {
+    "id": 65,
+    "type": "多选",
+    "question": "JWT 由哪几部分组成？",
+    "options": {
+      "A": "salt",
+      "B": "header",
+      "C": "payload",
+      "D": "signature"
+    },
+    "answer": "BCD",
+    "analysis": ""
+  },
+  {
+    "id": 66,
+    "type": "多选",
+    "question": "下列有助于防御 XSS 的措施有？",
+    "options": {
+      "A": "输出转义",
+      "B": "CSP",
+      "C": "拼接 SQL 字符串",
+      "D": "HttpOnly Cookie"
+    },
+    "answer": "ABD",
+    "analysis": ""
+  },
+  {
+    "id": 67,
+    "type": "多选",
+    "question": "下列属于 Docker 核心概念的有？",
+    "options": {
+      "A": "kernel",
+      "B": "image",
+      "C": "container",
+      "D": "volume"
+    },
+    "answer": "BCD",
+    "analysis": ""
+  },
+  {
+    "id": 68,
+    "type": "多选",
+    "question": "下列属于 JavaScript 原始类型的有？",
+    "options": {
+      "A": "string",
+      "B": "array",
+      "C": "number",
+      "D": "boolean"
+    },
+    "answer": "ACD",
+    "analysis": ""
+  },
+  {
+    "id": 69,
+    "type": "多选",
+    "question": "下列属于常用 HTTP 方法的有？",
+    "options": {
+      "A": "GET",
+      "B": "POST",
+      "C": "FETCH",
+      "D": "DELETE"
+    },
+    "answer": "ABD",
+    "analysis": ""
+  },
+  {
+    "id": 70,
+    "type": "多选",
+    "question": "下列适合存储密码的哈希算法有？",
+    "options": {
+      "A": "bcrypt",
+      "B": "md5",
+      "C": "scrypt",
+      "D": "argon2"
+    },
+    "answer": "ACD",
+    "analysis": ""
+  },
+  {
+    "id": 71,
+    "type": "判断",
+    "question": "const 声明的对象，其属性仍然可以被修改。",
+    "options": {},
+    "answer": "对",
+    "analysis": ""
+  },
+  {
+    "id": 72,
+    "type": "判断",
+    "question": "== 在比较时会进行类型转换。",
+    "options": {},
+    "answer": "对",
+    "analysis": ""
+  },
+  {
+    "id": 73,
+    "type": "判断",
+    "question": "Promise 进入 rejected 状态后不能再变为 fulfilled。",
+    "options": {},
+    "answer": "对",
+    "analysis": ""
+  },
+  {
+    "id": 74,
+    "type": "判断",
+    "question": "Vue 模板中使用 ref 时会自动解包，不需要写 .value。",
+    "options": {},
+    "answer": "对",
+    "analysis": ""
+  },
+  {
+    "id": 75,
+    "type": "判断",
+    "question": "v-if 和 v-show 都会销毁并重建 DOM 元素。",
+    "options": {},
+    "answer": "错",
+    "analysis": ""
+  },
+  {
+    "id": 76,
+    "type": "判断",
+    "question": "HTTP 401 表示已认证但权限不足。",
+    "options": {},
+    "answer": "错",
+    "analysis": ""
+  },
+  {
+    "id": 77,
+    "type": "判断",
+    "question": "GET 请求应当是幂等的。",
+    "options": {},
+    "answer": "对",
+    "analysis": ""
+  },
+  {
+    "id": 78,
+    "type": "判断",
+    "question": "JWT 的 payload 默认是加密的，无法被解码。",
+    "options": {},
+    "answer": "错",
+    "analysis": ""
+  },
+  {
+    "id": 79,
+    "type": "判断",
+    "question": "bcrypt 是一种带盐的密码哈希算法。",
+    "options": {},
+    "answer": "对",
+    "analysis": ""
+  },
+  {
+    "id": 80,
+    "type": "判断",
+    "question": "参数化查询可以有效防御 SQL 注入。",
+    "options": {},
+    "answer": "对",
+    "analysis": ""
+  },
+  {
+    "id": 81,
+    "type": "判断",
+    "question": "git revert 会删除历史提交记录。",
+    "options": {},
+    "answer": "错",
+    "analysis": ""
+  },
+  {
+    "id": 82,
+    "type": "判断",
+    "question": "Docker 容器与宿主机共享内核。",
+    "options": {},
+    "answer": "对",
+    "analysis": ""
+  },
+  {
+    "id": 83,
+    "type": "判断",
+    "question": "docker compose down -v 会同时删除命名数据卷。",
+    "options": {},
+    "answer": "对",
+    "analysis": ""
+  },
+  {
+    "id": 84,
+    "type": "判断",
+    "question": "SQLite 是典型的客户端-服务器数据库。",
+    "options": {},
+    "answer": "错",
+    "analysis": ""
+  },
+  {
+    "id": 85,
+    "type": "判断",
+    "question": "npm install 会参考 package-lock.json 安装依赖。",
+    "options": {},
+    "answer": "对",
+    "analysis": ""
+  },
+  {
+    "id": 86,
+    "type": "判断",
+    "question": "CORS 是浏览器实施的安全机制。",
+    "options": {},
+    "answer": "对",
+    "analysis": ""
+  },
+  {
+    "id": 87,
+    "type": "判断",
+    "question": "localStorage 中的数据会自动附加到 HTTP 请求头中。",
+    "options": {},
+    "answer": "错",
+    "analysis": ""
+  },
+  {
+    "id": 88,
+    "type": "判断",
+    "question": "Vue 组件必须使用 template 定义视图。",
+    "options": {},
+    "answer": "错",
+    "analysis": ""
+  },
+  {
+    "id": 89,
+    "type": "判断",
+    "question": "Array.prototype.map 会直接修改原数组。",
+    "options": {},
+    "answer": "错",
+    "analysis": ""
+  },
+  {
+    "id": 90,
+    "type": "判断",
+    "question": "HTTPS 可以降低中间人窃听和篡改的风险。",
+    "options": {},
+    "answer": "对",
+    "analysis": ""
+  }
+]
