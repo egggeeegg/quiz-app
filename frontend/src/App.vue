@@ -15,13 +15,8 @@ watch(() => route.fullPath, () => {
   isLoggedIn.value = !!localStorage.getItem("token");
 });
 
-// Apply background image directly to body (works in WeChat X5 browser)
-const bgUrl = localStorage.getItem('bg_url') || '/bg.jpg';
-document.body.style.backgroundImage = 'url(' + bgUrl + ')';
-document.body.style.backgroundRepeat = 'no-repeat';
-document.body.style.backgroundSize = 'cover';
-document.body.style.backgroundAttachment = 'fixed';
-document.body.style.backgroundPosition = 'center';
+/* Drop the inline background left by older versions; the body uses --bg. */
+document.body.style.backgroundImage = "none";
 </script>
 
 <style>
@@ -31,7 +26,7 @@ document.body.style.backgroundPosition = 'center';
   --correct: #22c55e;
   --wrong: #ef4444;
   --border: #e2e8f0;
-  --bg: #f8fafc;
+  --bg: #f1f5f9;
   --card: #fff;
   --text: #1e293b;
   --text-muted: #64748b;
