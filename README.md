@@ -6,6 +6,20 @@
 ![Node](https://img.shields.io/badge/Node-%3E%3D20-339933)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
+## 为什么做这个项目
+
+作为学生，最初是为了自己的期末复习：把课程题库整理成 JSON，需要一个能反复随机组卷、自动判分、把错题留痕的工具。现成的刷题应用要么把答案直接下发到前端，要么强依赖账号和云服务，于是写了这个可自托管的版本。
+
+开源出来是想解决三个具体问题：
+
+- **判分可信**：答案不下发浏览器，试卷由服务端签发 session，交卷只认服务端记录，同一份卷子只能提交一次。
+- **部署够轻**：单文件 SQLite（sql.js），不需要原生编译，一台小机器或一个 Docker 容器就能跑。
+- **可以复用**：组卷、判分、错题本拆在 service 层，方便替换题库或接进自己的系统。
+
+它不是商业产品，也没打算做成大而全的考试平台；目标是把“自己出题、自己练、错题可追踪”这件事做扎实。公开仓库里的 `questions.demo.json` 是 90 道自编示例题，真实课程题库不随仓库分发。
+
+> Built for my own final-exam review, then open-sourced as a small, server-authoritative quiz engine that is easy to self-host.
+
 ## 界面预览
 
 | 登录 | 注册 |
