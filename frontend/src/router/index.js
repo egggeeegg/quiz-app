@@ -5,6 +5,7 @@ import ExamView from "../views/ExamView.vue";
 import MistakesView from "../views/MistakesView.vue";
 import AdminView from "../views/AdminView.vue";
 import UserManageView from "../views/UserManageView.vue";
+import BankManageView from "../views/BankManageView.vue";
 
 const routes = [
   { path: "/", redirect: "/login" },
@@ -14,6 +15,7 @@ const routes = [
   { path: "/mistakes", name: "Mistakes", component: MistakesView, meta: { requiresAuth: true } },
   { path: "/admin", name: "Admin", component: AdminView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: "/admin/users", name: "UserManage", component: UserManageView, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: "/admin/banks", name: "BankManage", component: BankManageView, meta: { requiresAuth: true, requiresAdmin: true } },
 ];
 
 const router = createRouter({ history: createWebHashHistory(), routes });

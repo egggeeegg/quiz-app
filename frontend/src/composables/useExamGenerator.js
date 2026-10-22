@@ -4,12 +4,14 @@ import { useExamStore } from "../stores/exam.js";
 export function useExamGenerator() {
   const { state } = useExamStore();
 
-  async function startExam(mode) {
+  async function startExam(mode, bankIds = []) {
     state.loading = true;
     try {
       const paperMode = mode === "review" || mode === "smart" ? mode : "normal";
       /* Questions are generated and owned by the server; answers never reach the browser. */
-      const res = await api.post("/exams/generate", { mode: paperMode, limit: 50 });
+      const res = await api.post("/exams/generate", {
+        mode: paperMode, limit: 50, bank_ids: bankIds,
+      });
       const qs = res.data.questions || [];
 
       if (!qs.length && paperMode === "review") {

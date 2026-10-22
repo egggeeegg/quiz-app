@@ -2,6 +2,22 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Question banks (`question_banks`) with a default bank created by an idempotent, versioned migration; existing questions are moved into it automatically.
+- Admin question-bank import: JSON / CSV / XLSX parsing, normalisation, per-row validation, dry-run preview, downloadable error CSV, and `append` / `upsert` / `replace` modes.
+- Import batches with per-question before/after snapshots and transactional rollback. `replace` archives old questions instead of deleting them, so exam history keeps its references.
+- Admin API under `/api/admin` and a “题库管理” page with bank cards, upload wizard, history and rollback.
+- Bank-scoped paper generation (`bank_ids`) and bank-scoped question counts; public `/api/banks` list.
+- Exam sessions now snapshot each question's type and answer at generation time, so imports or edits during an exam cannot change grading.
+
+### Changed
+
+- Database migrations are versioned (`schema_migrations`) and take a one-off backup before applying.
+- `questions` gained `bank_id`, `external_id`, `status`, `content_hash`, `analysis` and `updated_at`.
+
 ## [1.0.0] - 2026-10-21
 
 First public release.

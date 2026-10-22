@@ -49,18 +49,30 @@ function run(args) {
   });
 }
 
-async function request(method, url, { token, device, body } = {}) {
-  const headers = { "Content-Type": "application/json" };
+async function request(method, url, { token, device, body, form } = {}) {
+  const headers = {};
+  if (!form) headers["Content-Type"] = "application/json";
   if (token) headers.Authorization = `Bearer ${token}`;
   if (device) headers["X-Device-Id"] = device;
   const res = await fetch(BASE + url, {
     method,
     headers,
-    body: body === undefined ? undefined : JSON.stringify(body),
+    body: form || (body === undefined ? undefined : JSON.stringify(body)),
   });
   let data = null;
   try { data = await res.json(); } catch {}
   return { status: res.status, data };
+}
+
+function csvText(rows) {
+  return "\uFEFF" + rows.map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(",")).join("\n");
+}
+
+function uploadForm(csv, name, mode) {
+  const fd = new FormData();
+  fd.append("file", new Blob([csv], { type: "text/csv" }), name);
+  if (mode) fd.append("mode", mode);
+  return fd;
 }
 
 async function waitForHealth(timeoutMs = 15000) {
@@ -222,7 +234,66 @@ async function main() {
     });
     check("banned device cannot login", banned.status === 403);
 
-    console.log("[9/9] authorization and cleanup");
+    console.log("[9/10] question bank import");
+    const header = ["external_id", "type", "question", "option_a", "option_b", "option_c", "option_d", "answer", "analysis"];
+    const importBank = await request("POST", "/api/admin/banks", {
+      token: adminToken, device: "DEV-ADMIN", body: { name: "导入冒烟" },
+    });
+    check("create question bank", importBank.status === 201 && importBank.data.id > 0);
+    const importBankId = importBank.data.id;
+
+    const badRows = csvText([header,
+      ["i1", "单选", "1+1=?", "1", "2", "3", "4", "B", ""],
+      ["i2", "单选", "2+2=?", "1", "2", "3", "4", "E", ""]]);
+    const dry = await request("POST", `/api/admin/banks/${importBankId}/validate`, {
+      token: adminToken, device: "DEV-ADMIN", form: uploadForm(badRows, "bad.csv"),
+    });
+    check("dry run reports one error", dry.status === 200 && dry.data.errorCount === 1 && dry.data.validCount === 1);
+
+    const goodRows = csvText([header,
+      ["i1", "单选", "1+1=?", "1", "2", "3", "4", "B", ""],
+      ["i2", "单选", "2+2=?", "1", "2", "3", "4", "D", ""]]);
+    const imported = await request("POST", `/api/admin/banks/${importBankId}/import`, {
+      token: adminToken, device: "DEV-ADMIN", form: uploadForm(goodRows, "good.csv", "append"),
+    });
+    check("append imports two questions", imported.status === 201 && imported.data.stats.created === 2);
+
+    const importedCounts = await request("GET", `/api/questions/count?bank_id=${importBankId}`, { token: userToken, device: "DEV-USER" });
+    check("imported bank has two questions", importedCounts.data["单选"] === 2);
+
+    const rollbackImport = await request("POST", `/api/admin/imports/${imported.data.batchId}/rollback`, {
+      token: adminToken, device: "DEV-ADMIN",
+    });
+    check("rollback before exams succeeds", rollbackImport.status === 200);
+    const rolledCounts = await request("GET", `/api/questions/count?bank_id=${importBankId}`, { token: userToken, device: "DEV-USER" });
+    check("rollback empties the bank", !rolledCounts.data["单选"]);
+
+    const snapshotBank = (await request("POST", "/api/admin/banks", {
+      token: adminToken, device: "DEV-ADMIN", body: { name: "快照冒烟" },
+    })).data.id;
+    await request("POST", `/api/admin/banks/${snapshotBank}/import`, {
+      token: adminToken, device: "DEV-ADMIN",
+      form: uploadForm(csvText([header, ["s1", "单选", "1+1=?", "1", "2", "3", "4", "B", ""]]), "snap.csv", "append"),
+    });
+    const snapshotPaper = await request("POST", "/api/exams/generate", {
+      token: userToken, device: "DEV-USER", body: { mode: "normal", bank_ids: [snapshotBank] },
+    });
+    const snapshotIndex = (snapshotPaper.data.questions || []).findIndex(q => q.question === "1+1=?");
+    check("bank-scoped paper contains question", snapshotIndex >= 0);
+    const snapshotQuestion = (await request("GET", `/api/admin/questions?bank_id=${snapshotBank}`, {
+      token: adminToken, device: "DEV-ADMIN",
+    })).data.rows.find(q => q.external_id === "s1");
+    await request("PATCH", `/api/admin/questions/${snapshotQuestion.id}`, {
+      token: adminToken, device: "DEV-ADMIN", body: { answer: "C" },
+    });
+    const snapshotSubmit = await request("POST", "/api/exams/submit", {
+      token: userToken, device: "DEV-USER",
+      body: { session_id: snapshotPaper.data.sessionId, answers: snapshotIndex >= 0 ? { [snapshotIndex]: "B" } : {} },
+    });
+    check("grading uses paper snapshot, not the edited answer",
+      snapshotSubmit.status === 200 && snapshotSubmit.data.details[snapshotIndex]?.correct === true);
+
+    console.log("[10/10] authorization and cleanup");
     const usersAsUser = await request("GET", "/api/users", { token: userToken, device: "DEV-USER" });
     check("non-admin blocked from user list", usersAsUser.status === 403);
 

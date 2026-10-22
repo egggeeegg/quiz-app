@@ -4,6 +4,7 @@ import path from "path";
 import crypto from "crypto";
 import { fileURLToPath } from "url";
 import bcrypt from "bcryptjs";
+import { contentHash } from "./utils/questionText.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 let db = null;
@@ -106,6 +107,105 @@ export async function initDB() {
     `);
     save();
   } catch(e) {}
+  /* ---------------- versioned migrations ---------------- */
+  db.run(`CREATE TABLE IF NOT EXISTS schema_migrations (
+    version INTEGER PRIMARY KEY,
+    name TEXT DEFAULT '',
+    applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);
+
+  const MIGRATIONS = [{
+    version: 1,
+    name: "question_banks_and_imports",
+    up() {
+      db.run(`CREATE TABLE IF NOT EXISTS question_banks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL UNIQUE,
+        description TEXT DEFAULT '',
+        is_default INTEGER DEFAULT 0,
+        archived_at DATETIME DEFAULT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )`);
+
+      const existing = new Set(all("PRAGMA table_info(questions)").map(c => c.name));
+      const addColumn = (name, ddl) => {
+        if (!existing.has(name)) db.run(`ALTER TABLE questions ADD COLUMN ${name} ${ddl}`);
+      };
+      addColumn("bank_id", "INTEGER");
+      addColumn("external_id", "TEXT");
+      addColumn("status", "TEXT DEFAULT 'active'");
+      addColumn("content_hash", "TEXT");
+      addColumn("updated_at", "DATETIME");
+      addColumn("analysis", "TEXT DEFAULT ''");
+
+      let bank = get("SELECT id FROM question_banks WHERE is_default = 1");
+      if (!bank) {
+        exec("INSERT INTO question_banks (name, description, is_default) VALUES ('默认题库', '迁移时自动创建', 1)", []);
+        bank = get("SELECT id FROM question_banks WHERE is_default = 1");
+      }
+      for (const row of all("SELECT id, question FROM questions")) {
+        exec(`UPDATE questions
+              SET bank_id = ?, status = COALESCE(status, 'active'),
+                  content_hash = ?, updated_at = COALESCE(updated_at, CURRENT_TIMESTAMP)
+              WHERE id = ?`,
+          [bank.id, contentHash(row.question), row.id]);
+      }
+
+      db.run("CREATE INDEX IF NOT EXISTS idx_questions_bank_status ON questions(bank_id, status)");
+      db.run("CREATE INDEX IF NOT EXISTS idx_questions_bank_hash ON questions(bank_id, content_hash)");
+      db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_questions_bank_external
+              ON questions(bank_id, external_id)
+              WHERE external_id IS NOT NULL AND status = 'active'`);
+
+      db.run(`CREATE TABLE IF NOT EXISTS import_batches (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        bank_id INTEGER NOT NULL,
+        admin_id INTEGER NOT NULL,
+        filename TEXT DEFAULT '',
+        format TEXT DEFAULT '',
+        mode TEXT DEFAULT 'append',
+        status TEXT DEFAULT 'importing',
+        total INTEGER DEFAULT 0,
+        created_count INTEGER DEFAULT 0,
+        updated_count INTEGER DEFAULT 0,
+        archived_count INTEGER DEFAULT 0,
+        skipped_count INTEGER DEFAULT 0,
+        failed_count INTEGER DEFAULT 0,
+        report_json TEXT DEFAULT '',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        rolled_back_at DATETIME DEFAULT NULL
+      )`);
+      db.run(`CREATE TABLE IF NOT EXISTS import_items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        batch_id INTEGER NOT NULL,
+        question_id INTEGER,
+        action TEXT NOT NULL,
+        before_json TEXT,
+        after_json TEXT
+      )`);
+      db.run("CREATE INDEX IF NOT EXISTS idx_import_items_batch ON import_items(batch_id)");
+    },
+  }];
+
+  for (const migration of MIGRATIONS) {
+    if (get("SELECT version FROM schema_migrations WHERE version = ?", [migration.version])) continue;
+    const backup = `${dbPath}.bak.v${migration.version}`;
+    if (fs.existsSync(dbPath) && !fs.existsSync(backup)) {
+      try { fs.copyFileSync(dbPath, backup); } catch (e) { console.error("[db] backup failed:", e.message); }
+    }
+    begin();
+    try {
+      migration.up();
+      exec("INSERT INTO schema_migrations (version, name) VALUES (?, ?)", [migration.version, migration.name]);
+      commit();
+      console.log(`[db] migration ${migration.version} applied: ${migration.name}`);
+    } catch (e) {
+      rollback();
+      console.error(`[db] migration ${migration.version} failed:`, e.message);
+      throw e;
+    }
+  }
+
   /* Bootstrap the first admin only on an empty user table.
      Credentials come from ADMIN_USERNAME / ADMIN_PASSWORD, otherwise a random
      password is generated and printed once. No hardcoded default password. */

@@ -11,7 +11,10 @@ router.post("/generate", requireAuthOptional, (req, res) => {
     if (mode !== "normal" && !req.user) return res.status(401).json({ error: "请先登录后再使用该组卷模式" });
 
     const limit = Math.min(Math.max(Number(req.body?.limit) || 50, 1), 200);
-    const { questions, sessionId } = examService.generateExam(req.user?.id, mode, limit);
+    const bankIds = Array.isArray(req.body?.bank_ids)
+      ? req.body.bank_ids.map(Number).filter(n => Number.isInteger(n) && n > 0)
+      : [];
+    const { questions, sessionId } = examService.generateExam(req.user?.id, mode, limit, bankIds);
     res.json({ questions, sessionId });
   } catch (e) {
     console.error("[exams] 组卷失败:", e.stack);

@@ -5,6 +5,7 @@
     <router-link to="/mistakes" style="text-decoration:none;color:var(--primary);font-size:14px">📝 查看错题集</router-link>
     <router-link v-if="role === 'admin'" to="/admin" style="text-decoration:none;color:var(--primary);font-size:14px">⚙️ 邀请码管理</router-link>
     <router-link v-if="role === 'admin'" to="/admin/users" style="text-decoration:none;color:var(--primary);font-size:14px">👥 用户管理</router-link>
+    <router-link v-if="role === 'admin'" to="/admin/banks" style="text-decoration:none;color:var(--primary);font-size:14px">📚 题库管理</router-link>
     <span style="margin-left:auto;font-size:13px;color:var(--text-muted)">
       {{ username }}
       <span v-if="role === 'admin'" style="display:inline-block;padding:0 6px;border-radius:4px;background:#fce7f3;color:#be185d;font-size:11px;margin-left:4px">admin</span>

@@ -4,6 +4,7 @@ import { shuffle } from "../utils/helpers.js";
 import * as questionModel from "../models/question.js";
 import * as examModel from "../models/exam.js";
 import * as mistakeModel from "../models/mistake.js";
+import * as bankModel from "../models/bank.js";
 import { get } from "../db.js";
 
 /* ------------------------------------------------------------------ *
@@ -25,9 +26,18 @@ if (typeof cleanupTimer.unref === "function") cleanupTimer.unref();
 
 function createSession(userId, questions) {
   const sessionId = crypto.randomUUID();
+  /* Snapshot type + answer at generation time. Grading must not depend on the
+     current question row: an import can update or archive it mid-exam. */
+  const items = questions.map(q => {
+    if (q._placeholder) return null;
+    const row = questionModel.findById(q.id);
+    if (!row) return null;
+    const hasOptions = row.type === "判断" || Object.keys(parseOptions(row.options)).length > 0;
+    return { id: row.id, type: row.type, answer: row.answer || "", hasOptions };
+  });
   sessions.set(sessionId, {
     userId: userId || null,
-    ids: questions.map(q => (q._placeholder ? null : q.id)),
+    items,
     createdAt: Date.now(),
     consumed: false,
   });
@@ -91,20 +101,22 @@ function placeholder(type) {
 /* ------------------------------------------------------------------ *
  * Paper generation
  * ------------------------------------------------------------------ */
-export function generateExam(userId, mode, limit) {
+export function generateExam(userId, mode, limit, requestedBanks = []) {
+  const bankIds = bankModel.resolveIds(requestedBanks);
+  if (bankIds.length === 0) throw httpError(400, "没有可用的题库");
   if (mode === "review" && userId) return build(generateReview(userId, limit || 50), userId);
-  if (mode === "smart" && userId) return build(generateSmart(userId), userId);
-  return build(generateNormal(), userId);
+  if (mode === "smart" && userId) return build(generateSmart(userId, bankIds), userId);
+  return build(generateNormal(bankIds), userId);
 }
 
 function build(questions, userId) {
   return { questions, sessionId: createSession(userId, questions) };
 }
 
-function generateNormal() {
+function generateNormal(bankIds) {
   const questions = [];
   for (const info of TYPES) {
-    const pool = questionModel.findByType(info.name);
+    const pool = questionModel.findByType(info.name, bankIds);
     shuffle(pool);
     for (let j = 0; j < info.count; j++) {
       questions.push(j < pool.length ? toPublicQuestion(pool[j]) : placeholder(info.name));
@@ -113,11 +125,11 @@ function generateNormal() {
   return questions;
 }
 
-function generateSmart(userId) {
+function generateSmart(userId, bankIds) {
   const mistakes = mistakeModel.findByUser(userId);
   const questions = [];
   for (const info of TYPES) {
-    const pool = questionModel.findByType(info.name);
+    const pool = questionModel.findByType(info.name, bankIds);
     shuffle(pool);
     const typeMistakes = shuffle(mistakes.filter(m => m.type === info.name).slice());
     const half = Math.floor(info.count / 2);
@@ -172,34 +184,31 @@ export function submitExam(userId, sessionId, answers, examName) {
   if (!answers || typeof answers !== "object") throw httpError(400, "缺少答案数据");
 
   const session = takeSession(sessionId, userId);
-  if (!Array.isArray(session.ids) || session.ids.length === 0) throw httpError(400, "试卷为空，请重新组卷");
-  if (session.ids.length > 200) throw httpError(400, "题目数量超出限制");
+  if (!Array.isArray(session.items) || session.items.length === 0) throw httpError(400, "试卷为空，请重新组卷");
+  if (session.items.length > 200) throw httpError(400, "题目数量超出限制");
 
   const name = (typeof examName === "string" && examName.trim()) || generateExamName(userId);
 
   const graded = [];
-  for (let i = 0; i < session.ids.length; i++) {
-    const qid = session.ids[i];
-    const dbQ = qid ? questionModel.findById(qid) : null;
-    if (!dbQ) {
+  for (let i = 0; i < session.items.length; i++) {
+    const item = session.items[i];
+    if (!item) {
       graded.push({ index: i, correct: false, points: 0, attempted: false, skipped: true, type: "", answer: "" });
       continue;
     }
-    const options = parseOptions(dbQ.options);
     const raw = answers[i];
     const ua = typeof raw === "string" ? raw.trim().slice(0, 20).toUpperCase() : "";
-    const hasOptions = dbQ.type === "判断" || Object.keys(options).length > 0;
-    const attempted = ua !== "" && hasOptions;
-    const correctAnswer = dbQ.answer || "";
-    const correct = attempted && isCorrect(dbQ.type, correctAnswer, ua);
+    const attempted = ua !== "" && item.hasOptions;
+    const correctAnswer = item.answer || "";
+    const correct = attempted && isCorrect(item.type, correctAnswer, ua);
     graded.push({
       index: i,
       correct,
-      points: correct ? (SCORING[dbQ.type] || 1) : 0,
+      points: correct ? (SCORING[item.type] || 1) : 0,
       attempted,
-      type: dbQ.type,
+      type: item.type,
       answer: correctAnswer,
-      questionId: dbQ.id,
+      questionId: item.id,
       userAnswer: ua,
     });
   }

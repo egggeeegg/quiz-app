@@ -27,11 +27,23 @@
           <small v-if="state.total > 0" style="color:var(--text-muted)">题库 {{ totalQ }} 题 · 组卷 {{ state.total }} 题</small>
         </div>
         <div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap">
-          <button class="btn btn-primary btn-sm" @click="() => startExam(examMode)" :disabled="state.loading">
+          <button class="btn btn-primary btn-sm" @click="startPaper" :disabled="state.loading">
             {{ state.loading ? '加载中...' : isReviewMode ? '开始重练' : isSmartMode ? '智能组卷' : '开始组卷' }}
           </button>
           <button class="btn btn-outline btn-sm" @click="exportDocx" :disabled="!state.submitted">导出DOCX</button>
         </div>
+      </div>
+
+      <!-- Bank selector (normal paper only, before starting) -->
+      <div v-if="banks.length > 1 && state.questions.length === 0 && !state.loading" class="card">
+        <strong style="font-size:14px">组卷题库</strong>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:10px">
+          <label v-for="b in banks" :key="b.id" style="font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer">
+            <input type="checkbox" :value="b.id" v-model="selectedBanks" />
+            {{ b.name }} <span style="color:var(--text-muted)">({{ b.total }})</span>
+          </label>
+        </div>
+        <small v-if="selectedBanks.length === 0" style="color:var(--text-muted)">未选择时使用全部题库</small>
       </div>
 
       <!-- Loading state -->
@@ -43,7 +55,7 @@
       <div v-else-if="state.questions.length === 0" class="card" style="text-align:center;padding:60px;color:var(--text-muted)">
         <h3 style="margin-bottom:8px;color:var(--text)">欢迎使用刷题系统</h3>
         <p>{{ isReviewMode ? '暂无错题可重练' : isSmartMode ? '暂无足够题目，请先补充题库' : '题库已加载，点击上方「开始组卷」开始考试' }}</p>
-        <button class="btn btn-primary" style="margin-top:16px" @click="() => startExam(examMode)">{{ isReviewMode ? '📝 开始重练' : '📝 开始组卷' }}</button>
+        <button class="btn btn-primary" style="margin-top:16px" @click="startPaper">{{ isReviewMode ? '📝 开始重练' : '📝 开始组卷' }}</button>
       </div>
 
       <!-- Exam in progress / result -->
@@ -54,7 +66,7 @@
           <span v-if="state.submitted" style="font-size:13px;color:var(--primary);font-weight:600">得分: {{ state.results.totalScore }} 分</span>
           <span v-if="!state.submitted" style="font-size:12px;color:var(--text-muted);margin-left:8px">未答题可随时提交</span>
           <div style="margin-left:auto;display:flex;gap:6px">
-              <button v-if="state.submitted" class="btn btn-sm btn-danger" @click="() => startExam(examMode)">重新组卷</button>
+              <button v-if="state.submitted" class="btn btn-sm btn-danger" @click="startPaper">重新组卷</button>
               <router-link v-if="state.submitted" to="/mistakes" class="btn btn-sm btn-outline" style="text-decoration:none">📝 查看错题集</router-link>
               <button v-if="!state.submitted" class="btn btn-sm btn-primary" @click="submitExam" :disabled="state.loading">
               {{ state.loading ? '提交中...' : '提交判分' }}
@@ -127,12 +139,23 @@ const { prevQuestion, nextQuestion, jumpTo } = useExamNavigation();
 
 const sidebarVisible = ref(false);
 const totalQ = ref(0);
+const banks = ref([]);
+const selectedBanks = ref([]);
+
+function startPaper() {
+  startExam(examMode, selectedBanks.value);
+}
 
 onMounted(async () => {
   try {
-    const res = await api.get("/questions/count");
-    totalQ.value = Object.values(res.data).reduce((a, b) => a + b, 0);
-    if (examMode !== "normal") startExam(examMode);
+    const [countRes, bankRes] = await Promise.all([
+      api.get("/questions/count"),
+      api.get("/banks"),
+    ]);
+    totalQ.value = Object.values(countRes.data).reduce((a, b) => a + b, 0);
+    banks.value = (bankRes.data || []).filter(b => b.total > 0);
+    selectedBanks.value = banks.value.map(b => b.id);
+    if (examMode !== "normal") startPaper();
   } catch { totalQ.value = 0; }
 });
 

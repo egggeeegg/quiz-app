@@ -29,7 +29,8 @@
 ## 功能
 
 - **随机组卷**：按题型分段抽取（60 单选 / 10 多选 / 20 判断，满分 100），也可按错题重练或智能组卷（一半错题 + 一半新题）。
-- **服务端判分**：正确答案不下发到浏览器；组卷时服务端签发 `sessionId`，交卷按题库答案复核，同一份试卷只能提交一次。
+- **服务端判分**：正确答案不下发到浏览器；组卷时服务端签发 `sessionId` 并快照答案，交卷按快照复核，同一份试卷只能提交一次。导入或编辑题目不会改变进行中试卷的判分。
+- **题库管理**：多题库并存，支持 JSON / CSV / XLSX 导入，导入前 dry-run 校验、错误行定位，append / upsert / replace 三种模式，按批次回滚。
 - **错题本**：按试卷分组或按题目平铺查看，记录错误答案、正确答案、复习次数，可筛选、排序、批量标记复习。
 - **多用户**：邀请码注册、独立考试记录、管理员可踢下线、封禁设备、删除用户。
 - **DOCX 导出**：纯前端生成答卷 + 错题集，含答案对照。
@@ -103,6 +104,8 @@ npm run dev                  # http://localhost:5173
 
 - 运行时优先读取 `questions.json`，不存在时回退到 `questions.demo.json`；
 - 也可以用 `SEED_FILE=/path/to/bank.json npm run seed` 指定文件；
+- 启动后管理员进入「📚 题库管理」，可上传 JSON / CSV / XLSX，先校验再导入，支持追加、按 `external_id` 更新、整库替换与批次回滚；
+- 导入限制：单文件 ≤ 10 MB、≤ 10000 行；CSV/XLSX 模板可在页面下载；
 - 公开部署前请确认题库内容的版权与合规性。
 
 ## 配置
@@ -124,8 +127,17 @@ npm run dev                  # http://localhost:5173
 |---|---|---|---|
 | POST | `/api/auth/register` | 否 | 邀请码注册 |
 | POST | `/api/auth/login` | 否 | 登录 |
-| GET | `/api/questions` | 可选 | 题目列表；普通用户不返回答案，管理员返回 |
-| GET | `/api/questions/count` | 否 | 各题型数量 |
+| GET | `/api/questions` | 可选 | 题目列表，支持 `bank_id` / `bank_ids`；普通用户不返回答案 |
+| GET | `/api/questions/count` | 否 | 各题型数量，支持 `bank_id` / `bank_ids` |
+| GET | `/api/banks` | 否 | 题库列表与各题型数量（不下发答案） |
+| GET/POST/PATCH | `/api/admin/banks` | 管理员 | 题库查询、新建、改名 |
+| POST | `/api/admin/banks/:id/validate` | 管理员 | 上传文件做 dry-run 校验，不写库 |
+| POST | `/api/admin/banks/:id/import` | 管理员 | 导入，body 带 `mode=append|upsert|replace` |
+| GET | `/api/admin/imports` | 管理员 | 导入历史 |
+| POST | `/api/admin/imports/:id/rollback` | 管理员 | 回滚批次 |
+| GET | `/api/admin/imports/:id/errors.csv` | 管理员 | 下载错误报告 |
+| GET | `/api/admin/template.csv` / `.xlsx` | 管理员 | 下载导入模板 |
+| GET | `/api/admin/banks/:id/export` | 管理员 | 导出题库 JSON/CSV |
 | POST | `/api/exams/generate` | 可选 | 组卷，返回 `{ questions, sessionId }`；`review` / `smart` 必须登录 |
 | POST | `/api/exams/submit` | 是 | 交卷，body 需带 `session_id` 与 `answers` |
 | GET | `/api/exams/history` | 是 | 考试记录与每场错题 |
@@ -151,7 +163,7 @@ cd backend
 npm test
 ```
 
-测试会创建临时数据库、导入示例题库、启动真实 HTTP 服务，覆盖注册/登录、答案脱敏、组卷、服务端判分、重放拒绝、错题刷新、设备封禁、删除用户事务等 32 项断言。
+测试会创建临时数据库、导入示例题库、启动真实 HTTP 服务，覆盖注册/登录、答案脱敏、组卷、服务端判分、重放拒绝、错题刷新、题库导入与回滚、组卷快照判分、设备封禁、删除用户事务等 40 项断言。
 
 ## 项目结构
 
@@ -163,9 +175,9 @@ quiz-app/
 │   │   ├── middleware/     # JWT、设备封禁
 │   │   ├── models/         # SQL 访问
 │   │   ├── routes/         # HTTP 路由
-│   │   ├── services/       # 组卷、判分、错题、认证
-│   │   ├── utils/
-│   │   ├── db.js           # sql.js 初始化与写入合并
+│   │   ├── services/       # 组卷、判分、错题、认证、题库导入
+│   │   ├── utils/          # 文本归一化、哈希
+│   │   ├── db.js           # sql.js 初始化、版本化迁移与写入合并
 │   │   ├── index.js        # Express 入口
 │   │   └── seed.js         # 题库导入
 │   └── test/smoke.mjs      # HTTP 冒烟测试
@@ -176,7 +188,7 @@ quiz-app/
 │   │   ├── composables/    # 组卷、交卷、导航、导出
 │   │   ├── stores/         # 共享考试状态
 │   │   ├── utils/
-│   │   └── views/          # 登录、考试、错题、管理
+│   │   └── views/          # 登录、考试、错题、题库/用户/邀请码管理
 │   └── nginx.conf
 ├── questions.demo.json
 ├── docker-compose.yml

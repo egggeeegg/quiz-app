@@ -1,5 +1,6 @@
 import "dotenv/config";
-import { initDB, all, exec } from "./db.js";
+import { initDB, all, get, exec } from "./db.js";
+import { contentHash } from "./utils/questionText.js";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -44,12 +45,23 @@ async function main() {
   const questions = JSON.parse(raw);
   console.log(`Loaded ${questions.length} questions from ${qPath}`);
 
-  const stmt = "INSERT INTO questions (type, question, options, answer, source_file) VALUES (?, ?, ?, ?, ?)";
+  const bank = get("SELECT id FROM question_banks WHERE is_default = 1")
+    || get("SELECT id FROM question_banks ORDER BY id LIMIT 1");
+  if (!bank) throw new Error("No question bank available; run migrations first.");
+
+  const stmt = `INSERT INTO questions
+    (type, question, options, answer, source_file, bank_id, external_id, status, content_hash, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, CURRENT_TIMESTAMP)`;
   const srcMap = { 单选: "单选.docx", 多选: "多选.docx", 判断: "判断.docx" };
 
-  for (const q of questions) {
-    exec(stmt, [q.type, q.question || "", JSON.stringify(q.options || {}), q.answer || "", srcMap[q.type] || "未知"]);
-  }
+  questions.forEach((q, index) => {
+    const question = q.question || "";
+    const externalId = q.external_id || (q.id != null ? `seed-${q.id}` : `seed-${index + 1}`);
+    exec(stmt, [
+      q.type, question, JSON.stringify(q.options || {}), q.answer || "",
+      srcMap[q.type] || "未知", bank.id, String(externalId), contentHash(question),
+    ]);
+  });
 
   console.log(`Seeded ${questions.length} questions successfully.`);
 }
